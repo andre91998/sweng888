@@ -1,7 +1,10 @@
 package com.example.practice2;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -13,11 +16,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.practice2.utils.Item;
 import com.example.practice2.utils.ItemsAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    View currentView = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,5 +66,25 @@ public class MainActivity extends AppCompatActivity {
         ItemsAdapter itemsAdapter = new ItemsAdapter(this, arrayList);
         ListView itemsList = findViewById(R.id.listView);
         itemsList.setAdapter(itemsAdapter);
+        itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentView = view;
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.example.practice2",
+                        "com.example.practice2.ItemInfoActivity"));
+                intent.putExtra("item", (Serializable) itemsList.getAdapter().getItem(position));
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (currentView != null) {
+            Snackbar snackbar = Snackbar.make(currentView, "Succesfully Returned to Home Screen", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 }
