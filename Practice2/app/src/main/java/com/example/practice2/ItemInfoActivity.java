@@ -21,11 +21,13 @@ public class ItemInfoActivity extends AppCompatActivity {
             item = getIntent().getExtras().getSerializable("item", Item.class);
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, "Failed to find Item to display");
-           item = new Item("N/A", "N/A");
+           item = new Item("N/A", "N/A", "N/A");
         }
         TextView title = findViewById(R.id.titleView);
         title.setText(item.getTitle());
         TextView subtitle = findViewById(R.id.subtitleView);
         subtitle.setText((item.getSubtitle()));
+        TextView description = findViewById(R.id.descriptionView);
+        description.setText(item.getDescription());
     }
 }

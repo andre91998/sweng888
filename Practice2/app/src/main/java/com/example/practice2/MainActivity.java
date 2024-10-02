@@ -47,21 +47,15 @@ public class MainActivity extends AppCompatActivity {
 
         // add all the values from 1 to 15 to the arrayList
         // the items are of the type NumbersView
-        arrayList.add(new Item("1", "One"));
-        arrayList.add(new Item("2", "Two"));
-        arrayList.add(new Item("3", "Three"));
-        arrayList.add(new Item("4", "Four"));
-        arrayList.add(new Item("5", "Five"));
-        arrayList.add(new Item("6", "Six"));
-        arrayList.add(new Item("7", "Seven"));
-        arrayList.add(new Item("8", "Eight"));
-        arrayList.add(new Item("9", "Nine"));
-        arrayList.add(new Item("10", "Ten"));
-        arrayList.add(new Item("11", "Eleven"));
-        arrayList.add(new Item("12", "Twelve"));
-        arrayList.add(new Item("13", "Thirteen"));
-        arrayList.add(new Item("14", "Fourteen"));
-        arrayList.add(new Item("15", "Fifteen"));
+        arrayList.add(new Item("SWENG888", "Mobile Computing", getString(R.string.description_888)));
+        arrayList.add(new Item("AI879", "Machine Vision", getString(R.string.description_879)));
+        arrayList.add(new Item("SWENG587", "Software System Architecture", getString(R.string.description_587)));
+        arrayList.add(new Item("SWENG837", "Software System Design", getString(R.string.description_837)));
+        arrayList.add(new Item("SWENG505", "Software Project Management", getString(R.string.description_505)));
+        arrayList.add(new Item("SWENG581", "Software Testing", getString(R.string.description_581)));
+        arrayList.add(new Item("SWENG861", "Software Construction", getString(R.string.description_861)));
+        arrayList.add(new Item("SWENG586", "Requirements Engineering", getString(R.string.description_586)));
+        arrayList.add(new Item("INSC561", "Web Security", getString(R.string.description_561)));
 
         ItemsAdapter itemsAdapter = new ItemsAdapter(this, arrayList);
         ListView itemsList = findViewById(R.id.listView);

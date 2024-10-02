@@ -10,10 +10,13 @@ public class Item implements Serializable {
     private String title;
     @Getter
     private String subtitle;
+    @Getter
+    private String description;
 
-    public Item(String title, String subtitle) {
+    public Item(String title, String subtitle, String description) {
         this.title = title;
         this.subtitle = subtitle;
+        this.description = description;
     }
 
 
