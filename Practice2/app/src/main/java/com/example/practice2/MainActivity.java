@@ -34,13 +34,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button showButton = findViewById(R.id.showButton);
-        showButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: implement button click logic
-            }
-        });
 
         // create a arraylist of the type NumbersView
         final ArrayList<Item> arrayList = new ArrayList<Item>();
