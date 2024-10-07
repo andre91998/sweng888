@@ -1,9 +1,11 @@
 package com.example.practice3.utils;
 
+import android.os.Parcelable;
+
 import lombok.Getter;
 import lombok.Setter;
 
-public class Product {
+public class Product implements Parcelable {
     @Getter
     private int id;
     @Getter

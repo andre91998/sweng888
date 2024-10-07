@@ -1,5 +1,7 @@
 package com.example.practice3;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.practice3.database.DBHandler;
 import com.example.practice3.utils.ProductItem;
 import com.example.practice3.utils.RecyclerViewAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private DBHandler dbHandler;
     private Button proceedButton;
     private RecyclerView mListView;
-    private List<ProductItem> mProductList;
+    private List<ProductItem> mProductItemList;
     private RecyclerView.Adapter mAdapter;
 
     @Override
@@ -47,21 +51,29 @@ public class MainActivity extends AppCompatActivity {
         proceedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Button Logic
                 if (enoughItemsSelected()) {
-                    //TODO: proceed to next activity
+                    //Proceed to next activity
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName("com.example.practice3",
+                            "com.example.practice3.EmailInfoActivity"));
+                    intent.putParcelableArrayListExtra("products", );
+                    startActivity(intent);
                 } else {
-                    //TODO:Display Snackbar
+                    //Display Snackbar
+                    Snackbar snackbar = Snackbar.make(v, "Please select 3 or more products!",
+                            Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 }
             }
         });
     }
 
     private List<ProductItem> getListData() {
+        //TODO: Query Database
         return null;
     }
 
     private boolean enoughItemsSelected() {
-        return mProductList.parallelStream().filter(ProductItem::isSelected).count() >= 3;
+        return mProductItemList.parallelStream().filter(ProductItem::isSelected).count() >= 3;
     }
 }
