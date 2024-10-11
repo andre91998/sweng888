@@ -11,14 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.practice3.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    private List<ProductItem> mProductList;
+    private Map<Integer, Boolean> mProductSelectedMap = new HashMap<>();
+    private List<Product> mProductList;
 
-    public RecyclerViewAdapter(List<ProductItem> productList) {
+    public RecyclerViewAdapter(List<Product> productList) {
         mProductList = productList;
+        for (int i = 0; i < mProductList.size(); i++) {
+            mProductSelectedMap.put(mProductList.get(i).getId(), false);
+        }
     }
 
     @Override
@@ -31,21 +39,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final ProductItem productItem = mProductList.get(position);
-        holder.textView.setText(productItem.getName());
-        holder.view.setBackgroundColor(productItem.isSelected() ? Color.CYAN : Color.WHITE);
+
+        final Product product = mProductList.get(position);
+        holder.textView.setText(product.getName());
+        holder.view.setBackgroundColor(mProductSelectedMap.get(product.getId()) ? Color.CYAN :
+                Color.WHITE);
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                productItem.setSelected(!productItem.isSelected());
-                holder.view.setBackgroundColor(productItem.isSelected() ? Color.CYAN : Color.WHITE);
+                mProductSelectedMap.put(product.getId(), !mProductSelectedMap.get(product.getId()));
+                holder.view.setBackgroundColor(mProductSelectedMap.get(product.getId()) ? Color.CYAN : Color.WHITE);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mProductList == null ? 0 : mProductList.size();
+        return mProductSelectedMap.size();
+    }
+
+    public int getSelectedItemCount() {
+       return (int) mProductSelectedMap.values().stream().filter(b -> b).count();
+    }
+
+    public Map<Integer, Boolean> getProductSelectedMap() {
+        return mProductSelectedMap;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -55,8 +73,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         private MyViewHolder(View itemView) {
             super(itemView);
-            view = itemView;
-            textView = (TextView) itemView.findViewById(R.id.text_view);
+            this.view = itemView;
+            this.textView = (TextView) view.findViewById(R.id.text_view);
         }
     }
 }

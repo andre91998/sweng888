@@ -2,8 +2,13 @@ package com.example.practice3.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.practice3.utils.Product;
+
+import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
 
@@ -61,6 +66,26 @@ public class DBHandler extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
 
         db.close();
+    }
+
+    public ArrayList<Product> queryAllCourses() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursorProducts = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        ArrayList<Product>  productList = new ArrayList<Product>();
+
+        if (cursorProducts.moveToFirst()) {
+            do {
+                productList.add(new Product(cursorProducts.getInt(0),
+                        cursorProducts.getString(1), cursorProducts.getString(2),
+                        cursorProducts.getString(3), cursorProducts.getFloat(4),
+                        cursorProducts.getBlob(5)));
+            } while(cursorProducts.moveToNext());
+        }
+
+        cursorProducts.close();
+        return productList;
     }
 
     @Override
