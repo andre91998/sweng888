@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +37,7 @@ public class EmailInfoActivity extends AppCompatActivity {
     private List<Product> mProductList;
     private RecyclerView mListView;
     private Button mEmailButton;
+    private ActivityResultLauncher<Intent> mLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,21 @@ public class EmailInfoActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(this));
 
+        mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.d(LOG_TAG, "Activity Result Received" + result.getResultCode());
+                    if(result.getResultCode() == RESULT_CANCELED) {
+                        Toast completionToast = new Toast(getApplicationContext());
+                        completionToast.setText("Product Info Successfully sent over Email!");
+                        completionToast.show();
+                        mProductList.clear();
+                        mAdapter = new RecyclerViewAdapter(mProductList);
+                        mListView.setAdapter(mAdapter);
+                        mListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    }
+                }
+        );
+
         mEmailButton = findViewById(R.id.emailButton);
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,19 +82,20 @@ public class EmailInfoActivity extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(view, "ERROR: no products to send!",
                             Snackbar.LENGTH_LONG);
                     snackbar.show();
+                    return;
                 }
 
                 Intent emailSelectorIntent = new Intent(Intent.ACTION_SENDTO);
                 emailSelectorIntent.setData(Uri.parse("mailto:"));
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.setType("message/rfc822");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@mail.com"});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@gmail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
 
                 StringBuilder sb = new StringBuilder();
                 for (Product p : mProductList) {
                     sb.append(p.getProductString());
+                    sb.append("\n");
                     sb.append("\n");
                 }
 
@@ -104,11 +123,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 }
 
                 try {
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
-                    Toast completionToast = new Toast(getApplicationContext());
-                    completionToast.setText("Product Info Successfully sent over Email!");
-                    completionToast.show();
-                    mAdapter = new RecyclerViewAdapter(new ArrayList<Product>());
+                    mLauncher.launch(emailIntent);
                 } catch (ActivityNotFoundException e) {
                     //Handle no email client case
                     Snackbar snackbar = Snackbar.make(view, "No email client available!!",
