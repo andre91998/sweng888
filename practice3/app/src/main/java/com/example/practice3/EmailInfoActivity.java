@@ -70,6 +70,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 emailSelectorIntent.setData(Uri.parse("mailto:"));
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("message/rfc822");
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@mail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
 
@@ -103,7 +104,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 }
 
                 try {
-                    startActivity(emailIntent);
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
                     Toast completionToast = new Toast(getApplicationContext());
                     completionToast.setText("Product Info Successfully sent over Email!");
                     completionToast.show();
