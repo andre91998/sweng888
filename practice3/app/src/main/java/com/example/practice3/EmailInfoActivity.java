@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,15 +65,27 @@ public class EmailInfoActivity extends AppCompatActivity {
                             Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                Intent emailSelectorIntent = new Intent(Intent.ACTION_SENDTO);
+                emailSelectorIntent.setData(Uri.parse("mailto:"));
+
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@mail.com"});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
+
                 StringBuilder sb = new StringBuilder();
                 for (Product p : mProductList) {
                     sb.append(p.getProductString());
                     sb.append("\n");
                 }
 
-                emailIntent.setData(Uri.parse("mailto:amsoccercrazy@gmail.com" +
-                        "&subject=" + Uri.encode(sb.toString())));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                emailIntent.setSelector( emailSelectorIntent );
+
+//                Uri attachment = FileProvider.getUriForFile(this, "my_fileprovider", myFile);
+//                emailIntent.putExtra(Intent.EXTRA_STREAM, attachment);
 
                 for (Product p: mProductList) {
                     File image = new File(getExternalCacheDir(), p.getName() + ".jpg");
