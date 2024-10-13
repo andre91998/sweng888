@@ -93,6 +93,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 emailSelectorIntent.setData(Uri.parse("mailto:"));
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                //emailIntent.setType("message/rfc822");
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@gmail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
 
@@ -108,26 +109,26 @@ public class EmailInfoActivity extends AppCompatActivity {
                 emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 emailIntent.setSelector( emailSelectorIntent );
 
-                List<Uri> attachmentList = new ArrayList<>();
+                ArrayList<Uri> imageUris = new ArrayList<>();
                 for (Product p: mProductList) {
                     byte[] picture = p.getPicture();
                     if (picture != null) {
-//                        Bitmap bitmap = BitmapFactory.decodeByteArray(p.getPicture(), 0,
-//                                p.getPicture().length);
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new ByteArrayOutputStream());
-                        File photo = new File(Environment.getExternalStorageDirectory(), p.getName() + ".jpg");
+                        File photo = new File(getFilesDir(), p.getName() + ".jpg");
                         try {
-                            FileOutputStream fos = new FileOutputStream(photo.getPath());
+                            FileOutputStream fos = new FileOutputStream(photo);
                             fos.write(picture);
                             fos.close();
+                            if (photo.exists() && photo.length()>0) {
+                                Uri uri = FileProvider.getUriForFile(getApplicationContext(),
+                                        getPackageName() + ".fileprovider", photo);
+                                imageUris.add(uri);
+                            }
                         } catch(java.io.IOException e) {
                             e.printStackTrace();
                         }
-
-                        emailIntent.putExtra(Intent.EXTRA_STREAM, picture);
                     }
                 }
-                //emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, new ArrayList<>(attachmentList));
+                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
 
                 try {
                     mLauncher.launch(emailIntent);
