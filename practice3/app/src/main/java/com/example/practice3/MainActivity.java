@@ -1,7 +1,11 @@
 package com.example.practice3;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,6 +25,7 @@ import com.example.practice3.utils.Product;
 import com.example.practice3.utils.RecyclerViewAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,17 +56,7 @@ public class MainActivity extends AppCompatActivity {
         initDB();
 
         mListView = (RecyclerView) findViewById(R.id.recyclerView);
-
-        mProductList = new ArrayList<>();
-        mProductList.add(new Product(0, "n0", "d", "s",
-                        3.50f, null));
-        mProductList.add(new Product(1, "n1", "d", "s",
-                3.50f, null));
-        mProductList.add(new Product(2, "n2", "d", "s",
-                3.50f, null));
-        mProductList.add(new Product(3, "n3", "d", "s",
-                3.50f, null));
-        //mProductList = dbHandler.queryAllCourses();
+        mProductList = dbHandler.queryAllCourses();
 
         mAdapter = new RecyclerViewAdapter(mProductList);
         mListView.setAdapter(mAdapter);
@@ -96,8 +92,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDB() {
+        getApplicationContext().deleteDatabase("practice3DB"); //to have fresh database every demo run
         dbHandler = new DBHandler(getApplicationContext());
-        //TODO: manually fill table
-        dbHandler.addNewProduct("p", "d", "s", 3.50f, null);
+        dbHandler.addNewProduct("Mustang", "Ford Muscle Car", "Ford", 50000f, getImage(getApplicationContext(), R.drawable.mustang));
+        dbHandler.addNewProduct("Camaro", "Chevrolet Muscle Car", "Chevrolet", 50500f, getImage(getApplicationContext(), R.drawable.camaro));
+        dbHandler.addNewProduct("Challenger", "Dodge Muscle Car", "Dodge", 55000f, getImage(getApplicationContext(), R.drawable.challenger));
+        dbHandler.addNewProduct("Corvette", "Chevrolet Sports Car", "Chevrolet", 90000f, getImage(getApplicationContext(), R.drawable.corvette));
+    }
+
+    private static byte[] getImage(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0,0, canvas.getWidth(), canvas.getHeight());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
     }
 }

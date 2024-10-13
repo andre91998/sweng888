@@ -70,7 +70,7 @@ public class Product implements Parcelable {
     }
 
     public String getProductString() {
-        return "Product Name: " + name + " | Product Description" + description +
-                " | Product Seller: " + seller + " | Prodcut Price: " + price;
+        return "Product Name: " + name + "\nProduct Description" + description +
+                "\nProduct Seller: " + seller + "\nProduct Price: " + price;
     }
 }

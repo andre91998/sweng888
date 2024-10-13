@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +25,8 @@ import com.example.practice3.utils.Product;
 import com.example.practice3.utils.RecyclerViewAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -104,23 +108,26 @@ public class EmailInfoActivity extends AppCompatActivity {
                 emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 emailIntent.setSelector( emailSelectorIntent );
 
-//                Uri attachment = FileProvider.getUriForFile(this, "my_fileprovider", myFile);
-//                emailIntent.putExtra(Intent.EXTRA_STREAM, attachment);
-
+                List<Uri> attachmentList = new ArrayList<>();
                 for (Product p: mProductList) {
-                    File image = new File(getExternalCacheDir(), p.getName() + ".jpg");
-                    try (FileOutputStream fos = new FileOutputStream(image)){
-                        byte[] picture = p.getPicture();
-                        if (picture != null) {
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(p.getPicture(), 0,
-                                    p.getPicture().length);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(image));
+                    byte[] picture = p.getPicture();
+                    if (picture != null) {
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(p.getPicture(), 0,
+//                                p.getPicture().length);
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new ByteArrayOutputStream());
+                        File photo = new File(Environment.getExternalStorageDirectory(), p.getName() + ".jpg");
+                        try {
+                            FileOutputStream fos = new FileOutputStream(photo.getPath());
+                            fos.write(picture);
+                            fos.close();
+                        } catch(java.io.IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, picture);
                     }
                 }
+                //emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, new ArrayList<>(attachmentList));
 
                 try {
                     mLauncher.launch(emailIntent);
