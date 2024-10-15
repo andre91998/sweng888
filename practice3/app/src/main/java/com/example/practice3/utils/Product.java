@@ -20,6 +20,7 @@ public class Product implements Parcelable {
     @Getter
     private float price;
     @Getter
+    @Setter
     private byte[] picture;
 
     protected Product(Parcel in) {

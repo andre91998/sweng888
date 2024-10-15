@@ -21,6 +21,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.practice3.database.DBHandler;
 import com.example.practice3.utils.Product;
 import com.example.practice3.utils.RecyclerViewAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ public class EmailInfoActivity extends AppCompatActivity {
     private RecyclerView mListView;
     private Button mEmailButton;
     private ActivityResultLauncher<Intent> mLauncher;
+    private DBHandler dbHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,10 @@ public class EmailInfoActivity extends AppCompatActivity {
         mProductList = getIntent()
                 .getParcelableArrayListExtra("products");
         Log.d(LOG_TAG, "Received Size: " + mProductList.size());
+        dbHandler = (DBHandler) getIntent().getSerializableExtra("db");
+        mProductList = mProductList.forEach(p -> p.setPicture(
+                dbHandler.queryProductPicture(p.getId())));
+
         if (mProductList != null && !mProductList.isEmpty()) {
             mAdapter = new RecyclerViewAdapter(mProductList);
         } else {
@@ -92,7 +99,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 Intent emailSelectorIntent = new Intent(Intent.ACTION_SENDTO);
                 emailSelectorIntent.setData(Uri.parse("mailto:"));
 
-                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 //emailIntent.setType("message/rfc822");
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@gmail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
@@ -104,34 +111,45 @@ public class EmailInfoActivity extends AppCompatActivity {
                     sb.append("\n");
                 }
 
-                emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-                emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                ArrayList<CharSequence> sbArray = new ArrayList<>();
+                sbArray.add(sb.toString());
+                emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray.get(0));
                 emailIntent.setSelector( emailSelectorIntent );
 
-                ArrayList<Uri> imageUris = new ArrayList<>();
+                ArrayList<Uri> imageUris = new ArrayList<Uri>();
                 for (Product p: mProductList) {
                     byte[] picture = p.getPicture();
                     if (picture != null) {
-                        File photo = new File(getFilesDir(), p.getName() + ".jpg");
+                        File photo = new File(getExternalCacheDir(),
+                                p.getName() + ".jpg");
                         try {
                             FileOutputStream fos = new FileOutputStream(photo);
                             fos.write(picture);
                             fos.close();
                             if (photo.exists() && photo.length()>0) {
+                                //Uri uri = Uri.fromFile(photo);
                                 Uri uri = FileProvider.getUriForFile(getApplicationContext(),
-                                        getPackageName() + ".fileprovider", photo);
+                                        getPackageName() + ".provider", photo);
                                 imageUris.add(uri);
+                                //grant permission to gmail to access the uri
+                                getApplicationContext().grantUriPermission(
+                                        "com.google.android.gm", uri,
+                                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             }
                         } catch(java.io.IOException e) {
                             e.printStackTrace();
                         }
+                    } else {
+                        Log.w(LOG_TAG, "Picture was null");
                     }
                 }
+                //emailIntent.putExtra(Intent.EXTRA_STREAM, imageUris.get(0));
                 emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-
+                emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 try {
                     mLauncher.launch(emailIntent);
+                    //getApplicationContext().star(emailIntent, );
                 } catch (ActivityNotFoundException e) {
                     //Handle no email client case
                     Snackbar snackbar = Snackbar.make(view, "No email client available!!",

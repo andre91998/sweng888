@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -75,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
                     intent.putParcelableArrayListExtra("products", new ArrayList<Product>(mProductList.stream()
                             .filter(e -> ((RecyclerViewAdapter) mAdapter)
                                     .getProductSelectedMap().get(e.getId()))
-                            .collect(Collectors.toList())));
+                            .collect(Collectors.toList()).forEach(p -> p.setPicture(null))));
+                    intent.putExtra("db", dbHandler);
                     startActivity(intent);
                 } else {
                     //Display Snackbar
@@ -94,20 +97,51 @@ public class MainActivity extends AppCompatActivity {
     private void initDB() {
         getApplicationContext().deleteDatabase("practice3DB"); //to have fresh database every demo run
         dbHandler = new DBHandler(getApplicationContext());
-        dbHandler.addNewProduct("Mustang", "Ford Muscle Car", "Ford", 50000f, getImage(getApplicationContext(), R.drawable.mustang));
-        dbHandler.addNewProduct("Camaro", "Chevrolet Muscle Car", "Chevrolet", 50500f, getImage(getApplicationContext(), R.drawable.camaro));
-        dbHandler.addNewProduct("Challenger", "Dodge Muscle Car", "Dodge", 55000f, getImage(getApplicationContext(), R.drawable.challenger));
-        dbHandler.addNewProduct("Corvette", "Chevrolet Sports Car", "Chevrolet", 90000f, getImage(getApplicationContext(), R.drawable.corvette));
+        dbHandler.addNewProduct("Mustang", "Ford Muscle Car",
+                "Ford", 50000f,
+                bitmapToByteArray(drawableToBitmap(AppCompatResources.getDrawable(this,
+                        R.drawable.mustang))));
+        dbHandler.addNewProduct("Camaro", "Chevrolet Muscle Car",
+                "Chevrolet", 50500f,
+                bitmapToByteArray(drawableToBitmap(AppCompatResources.getDrawable(this,
+                        R.drawable.camaro))));
+        dbHandler.addNewProduct("Challenger", "Dodge Muscle Car",
+                "Dodge", 55000f,
+                bitmapToByteArray(drawableToBitmap(AppCompatResources.getDrawable(this,
+                        R.drawable.challenger))));
+        dbHandler.addNewProduct("Corvette", "Chevrolet Sports Car",
+                "Chevrolet", 90000f,
+                bitmapToByteArray(drawableToBitmap(AppCompatResources.getDrawable(this,
+                        R.drawable.corvette))));    }
+
+    public byte[] bitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        bitmap.recycle();
+        return byteArray;
     }
 
-    private static byte[] getImage(Context context, int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        // We ask for the bounds if they have been set as they would be most
+        // correct, then we check we are  > 0
+        final int width = !drawable.getBounds().isEmpty() ?
+                drawable.getBounds().width() : drawable.getIntrinsicWidth();
+
+        final int height = !drawable.getBounds().isEmpty() ?
+                drawable.getBounds().height() : drawable.getIntrinsicHeight();
+
+        // Now we check we are > 0
+        final Bitmap bitmap = Bitmap.createBitmap(width <= 0 ? 1 : width, height <= 0 ? 1 : height,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0,0, canvas.getWidth(), canvas.getHeight());
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        return stream.toByteArray();
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

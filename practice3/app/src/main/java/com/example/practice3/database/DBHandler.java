@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.practice3.utils.Product;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class DBHandler extends SQLiteOpenHelper {
+public class DBHandler extends SQLiteOpenHelper implements Serializable {
 
     // Database Name
     private static final String DB_NAME = "practice3DB";
@@ -86,6 +88,27 @@ public class DBHandler extends SQLiteOpenHelper {
 
         cursorProducts.close();
         return productList;
+    }
+
+    public byte[] queryProductPicture(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursorProducts = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        ArrayList<Product>  productList = new ArrayList<Product>();
+
+        if (cursorProducts.moveToFirst()) {
+            do {
+                productList.add(new Product(cursorProducts.getInt(0),
+                        cursorProducts.getString(1), cursorProducts.getString(2),
+                        cursorProducts.getString(3), cursorProducts.getFloat(4),
+                        cursorProducts.getBlob(5)));
+            } while(cursorProducts.moveToNext());
+        }
+
+        cursorProducts.close();
+        return productList.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).get(0)
+                .getPicture();
     }
 
     @Override
