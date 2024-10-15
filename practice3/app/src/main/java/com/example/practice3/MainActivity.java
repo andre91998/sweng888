@@ -74,11 +74,12 @@ public class MainActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName("com.example.practice3",
                             "com.example.practice3.EmailInfoActivity"));
 
+                    mProductList.forEach(p -> p.setPicture(null));
                     intent.putParcelableArrayListExtra("products", new ArrayList<Product>(mProductList.stream()
                             .filter(e -> ((RecyclerViewAdapter) mAdapter)
                                     .getProductSelectedMap().get(e.getId()))
-                            .collect(Collectors.toList()).forEach(p -> p.setPicture(null))));
-                    intent.putExtra("db", dbHandler);
+                            .collect(Collectors.toList())));
+                    //intent.putExtra("db", dbHandler);
                     startActivity(intent);
                 } else {
                     //Display Snackbar

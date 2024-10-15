@@ -53,11 +53,11 @@ public class EmailInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_email_info);
 
         mListView = (RecyclerView) findViewById(R.id.recyclerView);
-        mProductList = getIntent()
-                .getParcelableArrayListExtra("products");
+        mProductList = getIntent().getParcelableArrayListExtra("products");
         Log.d(LOG_TAG, "Received Size: " + mProductList.size());
-        dbHandler = (DBHandler) getIntent().getSerializableExtra("db");
-        mProductList = mProductList.forEach(p -> p.setPicture(
+        dbHandler = new DBHandler(getApplicationContext());
+        //dbHandler = (DBHandler) getIntent().getSerializableExtra("db");
+        mProductList.forEach(p -> p.setPicture(
                 dbHandler.queryProductPicture(p.getId())));
 
         if (mProductList != null && !mProductList.isEmpty()) {
@@ -113,7 +113,7 @@ public class EmailInfoActivity extends AppCompatActivity {
 
                 ArrayList<CharSequence> sbArray = new ArrayList<>();
                 sbArray.add(sb.toString());
-                emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray.get(0));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray);
                 emailIntent.setSelector( emailSelectorIntent );
 
                 ArrayList<Uri> imageUris = new ArrayList<Uri>();
