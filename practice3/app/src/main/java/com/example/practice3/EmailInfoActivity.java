@@ -133,10 +133,10 @@ public class EmailInfoActivity extends AppCompatActivity {
                             fos.write(picture);
                             fos.close();
                             if (photo.exists() && photo.length()>0) {
-                                //Uri uri = Uri.fromFile(photo);
                                 Uri uri = FileProvider.getUriForFile(getApplicationContext(),
                                         getPackageName() + ".provider", photo);
                                 imageUris.add(uri);
+
                                 //grant permission to gmail to access the uri
                                 getApplicationContext().grantUriPermission(
                                         "com.google.android.gm", uri,

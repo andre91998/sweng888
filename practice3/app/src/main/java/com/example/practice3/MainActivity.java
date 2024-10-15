@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(this));
 
+        //Configure Proceed Button
         proceedButton = findViewById(R.id.proceedButton);
         proceedButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             .collect(Collectors.toList())));
                     startActivity(intent);
                 } else {
-                    //Display Snackbar
+                    //Display Error Snackbar
                     Snackbar snackbar = Snackbar.make(v, "Please select 3 or more products!",
                             Snackbar.LENGTH_LONG);
                     snackbar.show();
