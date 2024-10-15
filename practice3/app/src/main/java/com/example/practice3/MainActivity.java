@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        //configure database and insert our product entries
         initDB();
 
         mListView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                             .filter(e -> ((RecyclerViewAdapter) mAdapter)
                                     .getProductSelectedMap().get(e.getId()))
                             .collect(Collectors.toList())));
-                    //intent.putExtra("db", dbHandler);
                     startActivity(intent);
                 } else {
                     //Display Snackbar
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 bitmapToByteArray(drawableToBitmap(AppCompatResources.getDrawable(this,
                         R.drawable.corvette))));    }
 
-    public byte[] bitmapToByteArray(Bitmap bitmap) {
+    private static byte[] bitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         return byteArray;
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable) {
+    private static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }

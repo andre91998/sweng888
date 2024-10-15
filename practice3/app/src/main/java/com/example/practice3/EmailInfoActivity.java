@@ -53,10 +53,12 @@ public class EmailInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_email_info);
 
         mListView = (RecyclerView) findViewById(R.id.recyclerView);
+
         mProductList = getIntent().getParcelableArrayListExtra("products");
+
         Log.d(LOG_TAG, "Received Size: " + mProductList.size());
+
         dbHandler = new DBHandler(getApplicationContext());
-        //dbHandler = (DBHandler) getIntent().getSerializableExtra("db");
         mProductList.forEach(p -> p.setPicture(
                 dbHandler.queryProductPicture(p.getId())));
 
@@ -70,6 +72,7 @@ public class EmailInfoActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(this));
 
+        //Setup callback mechanism for the execution of the email sending activity
         mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     Log.d(LOG_TAG, "Activity Result Received" + result.getResultCode());
@@ -85,6 +88,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 }
         );
 
+        //setup send email functionality
         mEmailButton = findViewById(R.id.emailButton);
         mEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,22 +104,24 @@ public class EmailInfoActivity extends AppCompatActivity {
                 emailSelectorIntent.setData(Uri.parse("mailto:"));
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                //emailIntent.setType("message/rfc822");
+
+                //set email recipients and subject
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@gmail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
 
+                //Set Email body
                 StringBuilder sb = new StringBuilder();
                 for (Product p : mProductList) {
                     sb.append(p.getProductString());
                     sb.append("\n");
                     sb.append("\n");
                 }
-
                 ArrayList<CharSequence> sbArray = new ArrayList<>();
                 sbArray.add(sb.toString());
                 emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray);
                 emailIntent.setSelector( emailSelectorIntent );
 
+                //Set email image attachments
                 ArrayList<Uri> imageUris = new ArrayList<Uri>();
                 for (Product p: mProductList) {
                     byte[] picture = p.getPicture();
@@ -143,10 +149,11 @@ public class EmailInfoActivity extends AppCompatActivity {
                         Log.w(LOG_TAG, "Picture was null");
                     }
                 }
-                //emailIntent.putExtra(Intent.EXTRA_STREAM, imageUris.get(0));
                 emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                //launch email intent
                 try {
                     mLauncher.launch(emailIntent);
                     //getApplicationContext().star(emailIntent, );
