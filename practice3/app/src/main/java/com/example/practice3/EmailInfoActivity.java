@@ -106,7 +106,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
                 //set email recipients and subject
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"amsoccercrazy@gmail.com"});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"sweng888mobileapps@gmail.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Practice3_Products");
 
                 //Set Email body
