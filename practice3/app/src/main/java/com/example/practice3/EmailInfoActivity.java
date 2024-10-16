@@ -118,7 +118,7 @@ public class EmailInfoActivity extends AppCompatActivity {
                 }
                 ArrayList<CharSequence> sbArray = new ArrayList<>();
                 sbArray.add(sb.toString());
-                emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray);
+                emailIntent.putExtra(Intent.EXTRA_TEXT, sbArray.get(0));
                 emailIntent.setSelector( emailSelectorIntent );
 
                 //Set email image attachments
