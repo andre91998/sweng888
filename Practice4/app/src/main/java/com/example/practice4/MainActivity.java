@@ -4,8 +4,11 @@ package com.example.practice4;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -15,15 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.practice4.util.Scope;
 import com.example.practice4.util.ScopeRecyclerViewAdapter;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +80,12 @@ public class MainActivity extends NavigationActivity {
                     if (value != null) {
                         for (QueryDocumentSnapshot document : value) {
                             Scope scope = document.toObject(Scope.class); // Convert document to Product object
-                            scope.setId(Integer.parseInt(document.getId())); // Set the Firestore document ID
+                            scope.setId(document.getId()); // Set the Firestore document ID
+                            scope.setName(document.getString("name"));
+                            scope.setBrand(document.getString("brand"));
+                            scope.setMaxMagnification(document.getString("maxMagnification"));
+                            scope.setVariableMagnification(Boolean.TRUE.equals(document
+                                    .getBoolean("variableMagnification")));
                             mScopeList.add(scope); // Add the product to the list
                         }
                     }
@@ -91,50 +96,64 @@ public class MainActivity extends NavigationActivity {
     }
 
     private void addScope() {
-        //TODO: show popup to fill in new scope data
-        //TODO: write to firebase
 
+        //Show popup to fill in new scope data
+        final View layout = View.inflate(this, R.layout.add_scope_dialog, null);
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Create New Scope")
                 .setMessage("Set the Scope info")
-                .setView(R.layout.add_scope_dialog)
+                .setView(layout)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        //Editable value = input.getText();
+                        //TODO: write to firebase
+                        EditText edit = (EditText)layout.findViewById(R.id.inputScopeName);
+                        String scopeName = edit.getText().toString();
+
+                        edit = (EditText)layout.findViewById(R.id.inputScopeBrand);
+                        String scopeBrand = edit.getText().toString();
+
+                        edit = (EditText)layout.findViewById(R.id.inputMaxMagnification);
+                        String scopeMaxMagnification = edit.getText().toString();
+
+                        Switch aSwitch = (Switch)layout.findViewById(R.id.inputScopeVariableMagnification);
+                        boolean hasVarMag = aSwitch.isChecked();
+
+                        if (scopeName.isEmpty() || scopeBrand.isEmpty() || scopeMaxMagnification.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "Please enter all information", Toast.LENGTH_SHORT).show();
+                            return; // Exit if inputs are invalid
+                        }
+
+                        // Add a new document with a generated id.
+                        Map<String, Object> scope = new HashMap<>();
+                        scope.put("name", scopeName);
+                        scope.put("brand", scopeBrand);
+                        scope.put("maxMagnification", scopeMaxMagnification);
+                        scope.put("variableMagnification", hasVarMag);
+                        db.collection("scopes").add(scope).addOnSuccessListener(documentReference -> {
+                            Toast.makeText(getApplicationContext(), "Scope added successfully", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(getApplicationContext(), "Error adding scope: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                        setupRecyclerView();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // Do nothing.
                     }
                 }).show();
-
-//        // Add a new product to Firestore
-//        String name = editTextProductName.getText().toString().trim(); // Get product name
-//        String priceStr = editTextPrice.getText().toString().replace("$", "").trim(); // Get product price and remove $ sign
-//
-//        if (name.isEmpty() || priceStr.isEmpty()) {
-//            Toast.makeText(getApplicationContext(), "Please enter both product name and price", Toast.LENGTH_SHORT).show();
-//            return; // Exit if inputs are invalid
-//        }
-//
-//        try {
-//            double price = Double.parseDouble(priceStr); // Convert price to double
-//            Scope product = new Scope("temp", name, price); // Create a new product with a temporary ID
-//            db.collection("products").add(product).addOnSuccessListener(documentReference -> {
-//                product.setId(documentReference.getId()); // Set the ID after adding to Firestore
-//                editTextProductName.setText(""); // Clear input fields
-//                editTextPrice.setText("");
-//                Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
-//            }).addOnFailureListener(e -> {
-//                Toast.makeText(getApplicationContext(), "Error adding product: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            });
-//        } catch (NumberFormatException e) {
-//            Toast.makeText(getApplicationContext(), "Invalid price format. Please enter a valid number.", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     private void clearScopes() {
-        //TODO: clear firebase scope database
-    }
-
+            for (Scope scope : mScopeList) {
+                // Delete the scope from Firestore
+                db.collection("scopes").document(scope.getId()).delete()
+                        .addOnSuccessListener(aVoid -> {
+                            mScopeList.remove(scope); // Remove from the list
+                            setupRecyclerView();
+                        })
+                        .addOnFailureListener(e -> {
+                            //do nothing
+                        });
+            }
+        }
 }
