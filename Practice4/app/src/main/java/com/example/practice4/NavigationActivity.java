@@ -97,6 +97,11 @@ public abstract class NavigationActivity extends AppCompatActivity implements Na
             intent = new Intent(this, MainActivity.class);
             intent.putExtra("currentUser", currentUser);
             startActivity(intent);
+        } else if (id == R.id.nav_about) {
+            // Navigate to AboutActivity
+            intent = new Intent(this, AboutActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            startActivity(intent);
         } else {
             Toast.makeText(this, "Unknown navigation option selected", Toast.LENGTH_SHORT).show();
         }

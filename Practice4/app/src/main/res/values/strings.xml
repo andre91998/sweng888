@@ -16,6 +16,8 @@
     <string name="title_activity_main">Scopes</string>
     <string name="title_activity_sight_tool">Sighting Tool</string>
     <string name="welcome_message">Welcome to the Practice 4 App</string>
+    <string name="about_message"> About the Practice 4 App</string>
+    <string name="about_body">In this assignment, you will work on a mobile application that uses Firebase authentication and a Real-Time database. Moreover, you will be able to incorporate advanced UI elements such as Fragments and Navigation Drawer. This time, you will be able to choose whatever format you would like to use for the application, and you can create any entities to store information on Firebase. You may find the general requirements for the application below.</string>
     <string name="login">Login</string>
     <string name="don_t_have_an_account_sign_up">Don\'t Have and Account? Sign Up</string>
     <string name="email">Email</string>

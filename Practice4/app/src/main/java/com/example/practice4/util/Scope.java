@@ -20,6 +20,10 @@ public class Scope implements Parcelable {
         return name;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Scope(int id, String name, String brand, float maxMagnification,
                  boolean variableMagnification) {
         this.id = id;
@@ -27,6 +31,10 @@ public class Scope implements Parcelable {
         this.brand = brand;
         this.maxMagnification = maxMagnification;
         this.variableMagnification = variableMagnification;
+    }
+
+    public Scope() {
+
     }
 
     protected Scope(Parcel in) {
