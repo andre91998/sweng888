@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_scopes"
+            android:icon="@drawable/crosshair"
+            android:title="@string/menu_scopes" />
+        <item
+            android:id="@+id/nav_weather_tool"
+            android:icon="@drawable/baseline_cloud_queue_24"
+            android:title="@string/menu_weather" />
+        <item
+            android:id="@+id/nav_sight_tool"
+            android:icon="@drawable/icon_calculator"
+            android:title="@string/menu_calculator" />
+    </group>
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_info"
+            android:title="@string/menu_about" />
+    </group>
+
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/menu_logout" />
+</menu>
