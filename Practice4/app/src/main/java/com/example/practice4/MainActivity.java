@@ -18,6 +18,8 @@ import java.util.List;
 
 public class MainActivity extends NavigationActivity {
 
+    // UI components
+    private Toolbar toolbar;
     private RecyclerView mScopeListView; // List of scopes
     private RecyclerView.Adapter mAdapter; // Adapter for scopes
     private List<Scope> mScopeList = new ArrayList<>(); // Scope list
@@ -25,16 +27,17 @@ public class MainActivity extends NavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Set the layout
+        setContentView(R.layout.activity_main); // Set the layout for MainActivity
 
-        // Set up the toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        // Setup Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); // Set toolbar as ActionBar
 
-        // Set up the navigation drawer
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        // Initialize DrawerLayout and NavigationView
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        setupDrawer(toolbar, drawerLayout, navigationView); // Call the method from BaseActivity
+
+        setupDrawer(toolbar, drawer, navigationView, currentUser);
 
         setupRecyclerView();
     }
