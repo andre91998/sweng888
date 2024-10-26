@@ -44,4 +44,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database'
 
+    implementation 'com.android.support:design:24.0.0'
+
 }

@@ -1,7 +1,10 @@
 
 package com.example.practice4;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -90,6 +93,44 @@ public class MainActivity extends NavigationActivity {
     private void addScope() {
         //TODO: show popup to fill in new scope data
         //TODO: write to firebase
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Create New Scope")
+                .setMessage("Set the Scope info")
+                .setView(R.layout.add_scope_dialog)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //Editable value = input.getText();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+
+//        // Add a new product to Firestore
+//        String name = editTextProductName.getText().toString().trim(); // Get product name
+//        String priceStr = editTextPrice.getText().toString().replace("$", "").trim(); // Get product price and remove $ sign
+//
+//        if (name.isEmpty() || priceStr.isEmpty()) {
+//            Toast.makeText(getApplicationContext(), "Please enter both product name and price", Toast.LENGTH_SHORT).show();
+//            return; // Exit if inputs are invalid
+//        }
+//
+//        try {
+//            double price = Double.parseDouble(priceStr); // Convert price to double
+//            Scope product = new Scope("temp", name, price); // Create a new product with a temporary ID
+//            db.collection("products").add(product).addOnSuccessListener(documentReference -> {
+//                product.setId(documentReference.getId()); // Set the ID after adding to Firestore
+//                editTextProductName.setText(""); // Clear input fields
+//                editTextPrice.setText("");
+//                Toast.makeText(getApplicationContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
+//            }).addOnFailureListener(e -> {
+//                Toast.makeText(getApplicationContext(), "Error adding product: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//            });
+//        } catch (NumberFormatException e) {
+//            Toast.makeText(getApplicationContext(), "Invalid price format. Please enter a valid number.", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void clearScopes() {

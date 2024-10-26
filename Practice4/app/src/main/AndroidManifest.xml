@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <meta-data android:name="com.google.gms.google-services.API_KEY"
-        android:value="AIzaSyDKpqnmNoUEEflNN6vquBGE1ItiRff3D1"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
