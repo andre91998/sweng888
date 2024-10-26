@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="24dp"
             android:contentDescription="@string/app_logo"
-            android:src="@drawable/dialed_in_logo" />
+            android:src="@drawable/practice4logo" />
 
         <!-- Display Name Field -->
         <EditText

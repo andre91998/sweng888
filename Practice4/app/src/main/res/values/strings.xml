@@ -1,6 +1,6 @@
 
 <resources>
-    <string name="app_name">Dialed In Zeroing App</string>
+    <string name="app_name">Practice 4 App</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -15,7 +15,7 @@
     <string name="passwordsignup">Password</string>
     <string name="title_activity_main">Scopes</string>
     <string name="title_activity_sight_tool">Sighting Tool</string>
-    <string name="welcome_message">Welcome to Dialed In Zeroing App</string>
+    <string name="welcome_message">Welcome to the Practice 4 App</string>
     <string name="login">Login</string>
     <string name="don_t_have_an_account_sign_up">Don\'t Have and Account? Sign Up</string>
     <string name="email">Email</string>
@@ -26,7 +26,7 @@
     <string name="email_signup">Email Sign Up</string>
     <string name="user_name">Username</string>
     <string name="user_example_com">user@domain.com</string>
-    <string name="app_logo">Dialed In Zeroing App</string>
+    <string name="app_logo">Practice 4 App</string>
     <string name="add_item">Add Item</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>

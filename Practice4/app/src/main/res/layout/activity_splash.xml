@@ -15,7 +15,7 @@
         android:layout_centerInParent="true"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/app_logo"
-        android:src="@drawable/dialed_in_logo"
+        android:src="@drawable/practice4logo"
         tools:ignore="ContentDescription" />
 
     <!-- App Name -->
