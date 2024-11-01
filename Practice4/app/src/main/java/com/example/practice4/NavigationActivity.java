@@ -1,27 +1,18 @@
 package com.example.practice4;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.MenuItem;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.example.practice4.MainActivity;
-import com.example.practice4.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -100,6 +91,11 @@ public abstract class NavigationActivity extends AppCompatActivity implements Na
         } else if (id == R.id.nav_about) {
             // Navigate to AboutActivity
             intent = new Intent(this, AboutActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            startActivity(intent);
+        } else if (id == R.id.nav_maps) {
+            // Navigate to MapsActivity
+            intent = new Intent(this, MapsActivity.class);
             intent.putExtra("currentUser", currentUser);
             startActivity(intent);
         } else {

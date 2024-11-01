@@ -68,19 +68,6 @@
     </LinearLayout>
 
     <!-- Navigation Drawer -->
-    <!--    <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/activity_main_drawer"
-            app:itemTextColor="@color/pale_beige"
-            app:itemIconTint="@color/pale_beige"
-            android:background="@color/dark_slate"
-            tools:ignore="VisualLintBounds" >-->
-
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
